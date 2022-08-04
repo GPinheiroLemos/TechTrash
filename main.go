@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 	"techTrash/connection"
@@ -31,16 +30,5 @@ func main() {
 	people = append(people, Person{ID: "3", Firstname: "Francis", Lastname: "Sunday"})
 	router := mux.NewRouter()
 	router.HandleFunc("/lixeira", handlers.GetLixeira).Methods("GET")
-	router.HandleFunc("/contato", GetPeople).Methods("GET")
-	router.HandleFunc("/contato/{id}", CreatePerson).Methods("POST")
-	router.HandleFunc("/contato/{id}", DeletePerson).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
-
-func GetPeople(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(people)
-}
-func GetPerson(w http.ResponseWriter, r *http.Request) {
-}
-func CreatePerson(w http.ResponseWriter, r *http.Request) {}
-func DeletePerson(w http.ResponseWriter, r *http.Request) {}
