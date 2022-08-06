@@ -13,5 +13,6 @@ func main() {
 	connection.MysqlConnect()
 	router := mux.NewRouter()
 	router.HandleFunc("/lixeira", handlers.GetLixeira).Methods("GET")
+	router.HandleFunc("/loglixeira", handlers.GetLog).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
