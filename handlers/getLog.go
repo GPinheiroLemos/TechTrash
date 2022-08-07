@@ -16,23 +16,26 @@ type Log struct {
 }
 
 func GetLog(w http.ResponseWriter, r *http.Request) {
+
 	query := r.URL.Query()
 	id, ok := query["id"]
 	if !ok || len(id) == 0 {
 		log.Print(ErrMissingID)
 	}
 	idpassado := id[0]
-	w.Header().Set("Content-Type", "application/json")
+
 	db, err := connection.MysqlConnect()
 	if err != nil {
 		log.Print(ErrMysqlConnection)
 	}
 	defer db.Close()
+
 	querySQL := fmt.Sprintf("SELECT * FROM loglixeira WHERE idlixeira = %v", idpassado)
 	results, err := db.Query(querySQL)
 	if err != nil {
 		panic(err.Error())
 	}
+
 	var log []Log
 	for results.Next() {
 		var logbanco Log
@@ -42,5 +45,6 @@ func GetLog(w http.ResponseWriter, r *http.Request) {
 		}
 		log = append(log, logbanco)
 	}
+
 	json.NewEncoder(w).Encode(log)
 }

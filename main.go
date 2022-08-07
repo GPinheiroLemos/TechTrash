@@ -14,5 +14,7 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/lixeira", handlers.GetLixeira).Methods("GET")
 	router.HandleFunc("/loglixeira", handlers.GetLog).Methods("GET")
+	router.HandleFunc("/lixeira", handlers.PostLixeira).Methods("POST")
+	router.HandleFunc("/loglixeira", handlers.PostLog).Methods("POST")
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
