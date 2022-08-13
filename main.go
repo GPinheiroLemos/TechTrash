@@ -16,5 +16,6 @@ func main() {
 	router.HandleFunc("/loglixeira", handlers.GetLog).Methods("GET")
 	router.HandleFunc("/lixeira", handlers.PostLixeira).Methods("POST")
 	router.HandleFunc("/loglixeira", handlers.PostLog).Methods("POST")
+	log.Print("Running at port :8000")
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
