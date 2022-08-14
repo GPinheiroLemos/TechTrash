@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"techTrash/connection"
+	"techTrash/utils"
 )
 
 type LogLixeira struct {
@@ -31,10 +32,7 @@ func GetLog(w http.ResponseWriter, r *http.Request) {
 
 	db, err := connection.MysqlConnect()
 	if err != nil {
-		respError := map[string]string{"message": "mysql failed to connect"}
-		jsonResp, _ := json.Marshal(respError)
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write(jsonResp)
+		utils.SetResponseError(w, r, "mysql failed to connect")
 		return
 	}
 	defer db.Close()
@@ -42,10 +40,8 @@ func GetLog(w http.ResponseWriter, r *http.Request) {
 	querySQL := fmt.Sprintf("SELECT * FROM loglixeira WHERE idlixeira = %v", idpassado)
 	results, err := db.Query(querySQL)
 	if err != nil {
-		respError := map[string]string{"message": "sql query failed to execute", "query": querySQL}
-		jsonResp, _ := json.Marshal(respError)
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write(jsonResp)
+		message := fmt.Sprintf("mysql query failed to execute. query: %s", querySQL)
+		utils.SetResponseError(w, r, message)
 		return
 	}
 
@@ -63,13 +59,7 @@ func GetLog(w http.ResponseWriter, r *http.Request) {
 		logLixeira = append(logLixeira, logbanco)
 	}
 
-	if err == nil {
-		resp := map[string]string{"message": "success"}
-		jsonResp, _ := json.Marshal(resp)
-		w.WriteHeader(http.StatusCreated)
-		w.Write(jsonResp)
-		json.NewEncoder(w).Encode(logLixeira)
-		return
-	}
-	return
+	utils.SetResponseSuccess(w, r, "success")
+	json.NewEncoder(w).Encode(logLixeira)
+
 }

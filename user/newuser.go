@@ -1,4 +1,4 @@
-package handlers
+package user
 
 import (
 	"encoding/json"
@@ -9,7 +9,12 @@ import (
 	"techTrash/utils"
 )
 
-func PostLixeira(w http.ResponseWriter, r *http.Request) {
+type User struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+func NewUser(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 
@@ -19,13 +24,21 @@ func PostLixeira(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var lixeira []Lixeira
-	err = json.Unmarshal(body, &lixeira)
+	var newuser []User
+	err = json.Unmarshal(body, &newuser)
 	if err != nil {
 		utils.SetResponseError(w, r, "could not unmarshal body")
 		return
 	}
-	localizacao := lixeira[0].Localizacao
+
+	username := newuser[0].Username
+	password := newuser[0].Password
+
+	hashPassword, err := utils.HashPassword(password)
+	if err != nil {
+		utils.SetResponseError(w, r, "could not encrypt password")
+		return
+	}
 
 	db, err := connection.MysqlConnect()
 	if err != nil {
@@ -34,8 +47,8 @@ func PostLixeira(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	querySQL := fmt.Sprintf(`INSERT INTO lixeira (localizacao) VALUES ("%s")`, localizacao)
-	_, err = db.Query(querySQL)
+	querySQL := fmt.Sprintf(`INSERT INTO usuario (username,password) VALUES (%s, %s)`, username, "********")
+	_, err = db.Query("INSERT INTO usuario (username,password) VALUES (?, ?)", username, hashPassword)
 	if err != nil {
 		message := fmt.Sprintf("mysql query failed to execute. query: %s", querySQL)
 		utils.SetResponseError(w, r, message)
