@@ -11,7 +11,7 @@ import (
 
 func PostLixeira(w http.ResponseWriter, r *http.Request) {
 
-	// w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:3000")
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
