@@ -4,13 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"techTrash/connection"
 	"techTrash/utils"
 )
 
 func PostLixeira(w http.ResponseWriter, r *http.Request) {
-
+	log.Print("Chegou uma requisição")
 	// w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers")
 
