@@ -13,6 +13,7 @@ import (
 func main() {
 	connection.MysqlConnect()
 	router := mux.NewRouter()
+	mux.CORSMethodMiddleware(router)
 	router.HandleFunc("/lixeira", handlers.GetLixeira).Methods("GET")
 	router.HandleFunc("/loglixeira", handlers.GetLog).Methods("GET")
 	router.HandleFunc("/lixeira", handlers.PostLixeira).Methods("POST")
