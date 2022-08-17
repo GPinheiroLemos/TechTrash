@@ -12,7 +12,6 @@ import (
 )
 
 func main() {
-
 	connection.MysqlConnect()
 	router := chi.NewRouter()
 	router.Use(cors.AllowAll().Handler)
@@ -22,6 +21,6 @@ func main() {
 	router.Post("/loglixeira", controllers.PostLog)
 	router.Post("/cadastrarusuario", user.NewUser)
 	router.Post("/autenticarusuario", user.AuthUser)
-	log.Print("rodando na porta 8000")
+	log.Print("Listenning on port 8000")
 	http.ListenAndServe(":8000", router)
 }
