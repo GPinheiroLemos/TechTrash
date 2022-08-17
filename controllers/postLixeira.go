@@ -1,4 +1,4 @@
-package handlers
+package controllers
 
 import (
 	"encoding/json"
@@ -7,10 +7,9 @@ import (
 	"net/http"
 	"techTrash/connection"
 	"techTrash/utils"
-	"time"
 )
 
-func PostLog(w http.ResponseWriter, r *http.Request) {
+func PostLixeira(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 
@@ -20,16 +19,13 @@ func PostLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var loglixeira []LogLixeira
-	err = json.Unmarshal(body, &loglixeira)
+	var lixeira []Lixeira
+	err = json.Unmarshal(body, &lixeira)
 	if err != nil {
 		utils.SetResponseError(w, r, "could not unmarshal body")
 		return
 	}
-	idlixeira := loglixeira[0].Idlixeira
-	nivel := loglixeira[0].Nivel
-	currentTime := time.Now()
-	date := currentTime.Format("2006-01-02 15:04:05")
+	localizacao := lixeira[0].Localizacao
 
 	db, err := connection.MysqlConnect()
 	if err != nil {
@@ -38,7 +34,7 @@ func PostLog(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	querySQL := fmt.Sprintf(`INSERT INTO loglixeira (idlixeira, nivel, data) VALUES (%v, %v, "%v")`, idlixeira, nivel, date)
+	querySQL := fmt.Sprintf(`INSERT INTO lixeira (localizacao) VALUES ("%s")`, localizacao)
 	_, err = db.Query(querySQL)
 	if err != nil {
 		message := fmt.Sprintf("mysql query failed to execute. query: %s", querySQL)
