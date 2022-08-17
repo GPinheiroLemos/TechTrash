@@ -17,7 +17,7 @@ type LogLixeira struct {
 
 func GetLog(w http.ResponseWriter, r *http.Request) {
 
-	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:3000")
+	// w.Header().Add("Access-Control-Allow-Origin", "*")
 
 	query := r.URL.Query()
 	id, ok := query["idlixeira"]

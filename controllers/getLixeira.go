@@ -22,7 +22,7 @@ type Lixeira struct {
 
 func GetLixeira(w http.ResponseWriter, r *http.Request) {
 
-	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:3000")
+	// w.Header().Add("Access-Control-Allow-Origin", "*")
 
 	query := r.URL.Query()
 	var id []string
