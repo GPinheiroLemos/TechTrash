@@ -59,7 +59,7 @@ func GetLog(w http.ResponseWriter, r *http.Request) {
 		logLixeira = append(logLixeira, logbanco)
 	}
 
-	utils.SetResponseSuccess(w, r, "success")
+	utils.SetResponseSuccess(w, r)
 	json.NewEncoder(w).Encode(logLixeira)
 
 }

@@ -72,7 +72,7 @@ func GetLixeira(w http.ResponseWriter, r *http.Request) {
 		lixeira = append(lixeira, lixeirabanco)
 	}
 
-	utils.SetResponseSuccess(w, r, "success")
+	utils.SetResponseSuccess(w, r)
 	json.NewEncoder(w).Encode(lixeira)
 
 }

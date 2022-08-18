@@ -55,6 +55,6 @@ func NewUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.SetResponseSuccess(w, r, "success")
+	utils.SetResponseSuccess(w, r)
 
 }

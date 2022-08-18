@@ -7,11 +7,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func SetResponseSuccess(w http.ResponseWriter, r *http.Request, message string) {
-	respError := map[string]string{"message": message}
-	jsonResp, _ := json.Marshal(respError)
+func SetResponseSuccess(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
-	w.Write(jsonResp)
 	return
 }
 

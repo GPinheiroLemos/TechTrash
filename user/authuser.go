@@ -60,6 +60,6 @@ func AuthUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.SetResponseSuccess(w, r, "user authentiaction success")
+	utils.SetResponseSuccess(w, r)
 
 }
