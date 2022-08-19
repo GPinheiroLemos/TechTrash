@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"techTrash/connection"
@@ -27,14 +28,38 @@ func DeleteLixeira(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	querySQL := fmt.Sprintf("DELETE FROM lixeira WHERE idlixeira = %v", idpassado)
+	querySQL := fmt.Sprintf("SELECT idlixeira FROM lixeira WHERE idlixeira = %v", idpassado)
+	results, err := db.Query("SELECT idlixeira FROM lixeira WHERE idlixeira = ?", idpassado)
+	if err != nil {
+		message := fmt.Sprintf("mysql query failed to execute. query: %s", querySQL)
+		utils.SetResponseError(w, r, message)
+		return
+	}
+	var lixeira []Lixeira
+	for results.Next() {
+		var lixeirabanco Lixeira
+		err = results.Scan(&lixeirabanco.Id)
+		if err != nil {
+			respError := map[string]string{"message": "error while reading data response from database"}
+			jsonResp, _ := json.Marshal(respError)
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write(jsonResp)
+			return
+		}
+		lixeira = append(lixeira, lixeirabanco)
+	}
+	if len(lixeira) == 0 {
+		utils.SetResponseError(w, r, "api did not found any lixeira with this id")
+		return
+	}
+
+	querySQL = fmt.Sprintf("DELETE FROM lixeira WHERE idlixeira = %v", idpassado)
 	_, err = db.Query("DELETE FROM lixeira WHERE idlixeira = ?", idpassado)
 	if err != nil {
 		message := fmt.Sprintf("mysql query failed to execute. query: %s", querySQL)
 		utils.SetResponseError(w, r, message)
 		return
 	}
-
-	w.WriteHeader(http.StatusNoContent)
+	w.WriteHeader(http.StatusOK)
 
 }

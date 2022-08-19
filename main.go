@@ -18,7 +18,7 @@ func main() {
 	router.Get("/lixeira", controllers.GetLixeira)
 	router.Post("/lixeira", controllers.PostLixeira)
 	router.Put("/lixeira", controllers.EditLixeira)
-	router.Post("/deletelixeira", controllers.DeleteLixeira)
+	router.Delete("/lixeira", controllers.DeleteLixeira)
 	router.Get("/loglixeira", controllers.GetLog)
 	router.Post("/loglixeira", controllers.PostLog)
 	router.Post("/cadastrarusuario", user.NewUser)
