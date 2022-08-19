@@ -11,8 +11,6 @@ import (
 
 func EditLixeira(w http.ResponseWriter, r *http.Request) {
 
-	w.Header().Set("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers")
-
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		utils.SetResponseError(w, r, "could not read body")
