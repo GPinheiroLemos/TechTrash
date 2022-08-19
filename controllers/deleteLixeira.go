@@ -35,6 +35,6 @@ func DeleteLixeira(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.SetResponseSuccess(w, r)
+	w.WriteHeader(http.StatusNoContent)
 
 }
