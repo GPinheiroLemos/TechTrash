@@ -16,8 +16,6 @@ type User struct {
 
 func NewUser(w http.ResponseWriter, r *http.Request) {
 
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		utils.SetResponseError(w, r, "could not read body")
