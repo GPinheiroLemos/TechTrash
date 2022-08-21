@@ -42,7 +42,7 @@ func EditLixeira(w http.ResponseWriter, r *http.Request) {
 		utils.SetResponseError(w, r, message)
 		return
 	}
-
+	var lixeirabancoresults []Lixeira
 	for results.Next() {
 		var lixeirabanco Lixeira
 		err = results.Scan(&lixeirabanco.Id, &lixeirabanco.Localizacao, &lixeirabanco.Altura)
@@ -53,14 +53,14 @@ func EditLixeira(w http.ResponseWriter, r *http.Request) {
 			w.Write(jsonResp)
 			return
 		}
-		lixeira = append(lixeira, lixeirabanco)
+		lixeirabancoresults = append(lixeirabancoresults, lixeirabanco)
 	}
 
 	if altura == 0 {
-		altura, _ = strconv.ParseFloat(lixeira[0].Altura, 64)
+		altura, _ = strconv.ParseFloat(lixeirabancoresults[0].Altura, 64)
 	}
 	if localizacao == "" {
-		localizacao = lixeira[0].Localizacao
+		localizacao = lixeirabancoresults[0].Localizacao
 	}
 
 	querySQL = fmt.Sprintf(`UPDATE lixeira SET localizacao = "%s", altura = %v WHERE idlixeira = %d`, localizacao, altura, id)
