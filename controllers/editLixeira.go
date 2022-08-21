@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"techTrash/connection"
 	"techTrash/utils"
 )
@@ -25,7 +26,7 @@ func EditLixeira(w http.ResponseWriter, r *http.Request) {
 	}
 	id := lixeira[0].Id
 	localizacao := lixeira[0].Localizacao
-	altura := lixeira[0].Altura
+	altura, _ := strconv.ParseFloat(lixeira[0].Altura, 64)
 
 	db, err := connection.MysqlConnect()
 	if err != nil {
@@ -56,7 +57,7 @@ func EditLixeira(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if altura == 0 {
-		altura = lixeira[0].Altura
+		altura, _ = strconv.ParseFloat(lixeira[0].Altura, 64)
 	}
 	if localizacao == "" {
 		localizacao = lixeira[0].Localizacao

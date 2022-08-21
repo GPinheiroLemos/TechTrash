@@ -16,9 +16,9 @@ var (
 )
 
 type Lixeira struct {
-	Id          int     `json:"id"`
-	Localizacao string  `json:"localizacao"`
-	Altura      float64 `json:"altura"`
+	Id          int    `json:"id"`
+	Localizacao string `json:"localizacao"`
+	Altura      string `json:"altura"`
 }
 
 func GetLixeira(w http.ResponseWriter, r *http.Request) {

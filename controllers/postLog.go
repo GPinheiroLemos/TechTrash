@@ -7,6 +7,7 @@ import (
 	"log"
 	"math"
 	"net/http"
+	"strconv"
 	"techTrash/connection"
 	"techTrash/utils"
 	"time"
@@ -69,7 +70,7 @@ func PostLog(w http.ResponseWriter, r *http.Request) {
 		}
 		dadosLixeira = append(dadosLixeira, lixeiraBanco)
 	}
-	altura := dadosLixeira[0].Altura
+	altura, _ := strconv.ParseFloat(dadosLixeira[0].Altura, 64)
 
 	querySQL = fmt.Sprintf("SELECT nivel FROM loglixeira WHERE idlixeira = %v", idlixeira)
 	results, err = db.Query(querySQL)
