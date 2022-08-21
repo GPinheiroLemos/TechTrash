@@ -39,6 +39,8 @@ func PostLog(w http.ResponseWriter, r *http.Request) {
 	}
 	idlixeira := loglixeira[0].Idlixeira
 	distancia := loglixeira[0].Distancia
+	log.Print(idlixeira)
+	log.Print(distancia)
 	currentTime := time.Now()
 	date := currentTime.Format("2006-01-02 15:04:05")
 
@@ -93,10 +95,15 @@ func PostLog(w http.ResponseWriter, r *http.Request) {
 		}
 		dadosLogLixeira = append(dadosLogLixeira, logLixeiraBanco)
 	}
+	var nivelAnterior float64
 
-	nivelAnterior := dadosLogLixeira[len(dadosLogLixeira)-1].Nivel
+	if len(dadosLogLixeira) <= 0 {
+		nivelAnterior = 0
+	} else {
+		nivelAnterior = dadosLogLixeira[len(dadosLogLixeira)-1].Nivel
+	}
 
-	nivel := ((distancia - 3 - altura) * (-1)) / altura * 100
+	nivel := ((distancia - 7 - altura) * (-1)) / altura * 100
 	nivel = math.Round(nivel*100) / 100
 	if nivel >= 100 {
 		nivel = 100
