@@ -71,7 +71,31 @@ func PostLog(w http.ResponseWriter, r *http.Request) {
 	}
 	altura := dadosLixeira[0].Altura
 
-	nivel := ((distancia - altura - 3) * (-1)) / altura * 100
+	querySQL = fmt.Sprintf("SELECT nivel FROM loglixeira WHERE idlixeira = %v", idlixeira)
+	results, err = db.Query(querySQL)
+	if err != nil {
+		message := fmt.Sprintf("mysql query failed to execute. query: %s", querySQL)
+		utils.SetResponseError(w, r, message)
+		return
+	}
+
+	var dadosLogLixeira []LogLixeira
+	for results.Next() {
+		var logLixeiraBanco LogLixeira
+		err = results.Scan(&logLixeiraBanco.Nivel)
+		if err != nil {
+			respError := map[string]string{"message": "error while reading data response from database"}
+			jsonResp, _ := json.Marshal(respError)
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write(jsonResp)
+			return
+		}
+		dadosLogLixeira = append(dadosLogLixeira, logLixeiraBanco)
+	}
+
+	nivelAnterior := dadosLogLixeira[len(dadosLogLixeira)-1].Nivel
+
+	nivel := ((distancia - 3 - altura) * (-1)) / altura * 100
 	nivel = math.Round(nivel*100) / 100
 	if nivel >= 100 {
 		nivel = 100
@@ -79,12 +103,15 @@ func PostLog(w http.ResponseWriter, r *http.Request) {
 		nivel = 0
 	}
 
-	querySQL = fmt.Sprintf(`INSERT INTO loglixeira (idlixeira, nivel, data) VALUES (%v, %v, "%v")`, idlixeira, nivel, date)
-	_, err = db.Query(querySQL)
-	if err != nil {
-		message := fmt.Sprintf("mysql query failed to execute. query: %s", querySQL)
-		utils.SetResponseError(w, r, message)
-		return
+	diferenca := math.Abs(nivelAnterior - nivel)
+	if diferenca > 3 {
+		querySQL = fmt.Sprintf(`INSERT INTO loglixeira (idlixeira, nivel, data) VALUES (%v, %v, "%v")`, idlixeira, nivel, date)
+		_, err = db.Query(querySQL)
+		if err != nil {
+			message := fmt.Sprintf("mysql query failed to execute. query: %s", querySQL)
+			utils.SetResponseError(w, r, message)
+			return
+		}
 	}
 
 	utils.SetResponseSuccess(w, r)
