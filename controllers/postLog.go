@@ -4,13 +4,25 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
+	"math"
 	"net/http"
 	"techTrash/connection"
 	"techTrash/utils"
 	"time"
 )
 
+type LogLixeira struct {
+	Idlog     int     `json:"idlog"`
+	Idlixeira int     `json:"idlixeira"`
+	Nivel     float64 `json:"nivel"`
+	Data      string  `json:"data"`
+	Distancia float64 `json:"distancia"`
+}
+
 func PostLog(w http.ResponseWriter, r *http.Request) {
+
+	log.Print("Chegou uma resquisição do esp!")
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -25,7 +37,7 @@ func PostLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	idlixeira := loglixeira[0].Idlixeira
-	nivel := loglixeira[0].Nivel
+	distancia := loglixeira[0].Distancia
 	currentTime := time.Now()
 	date := currentTime.Format("2006-01-02 15:04:05")
 
@@ -36,7 +48,38 @@ func PostLog(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	querySQL := fmt.Sprintf(`INSERT INTO loglixeira (idlixeira, nivel, data) VALUES (%v, %v, "%v")`, idlixeira, nivel, date)
+	querySQL := fmt.Sprintf("SELECT * FROM lixeira WHERE idlixeira = %v", idlixeira)
+	results, err := db.Query(querySQL)
+	if err != nil {
+		message := fmt.Sprintf("mysql query failed to execute. query: %s", querySQL)
+		utils.SetResponseError(w, r, message)
+		return
+	}
+
+	var dadosLixeira []Lixeira
+	for results.Next() {
+		var lixeiraBanco Lixeira
+		err = results.Scan(&lixeiraBanco.Id, &lixeiraBanco.Localizacao, &lixeiraBanco.Altura)
+		if err != nil {
+			respError := map[string]string{"message": "error while reading data response from database"}
+			jsonResp, _ := json.Marshal(respError)
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write(jsonResp)
+			return
+		}
+		dadosLixeira = append(dadosLixeira, lixeiraBanco)
+	}
+	altura := dadosLixeira[0].Altura
+
+	nivel := ((distancia - altura - 3) * (-1)) / altura * 100
+	nivel = math.Round(nivel*100) / 100
+	if nivel >= 100 {
+		nivel = 100
+	} else if nivel <= 0 {
+		nivel = 0
+	}
+
+	querySQL = fmt.Sprintf(`INSERT INTO loglixeira (idlixeira, nivel, data) VALUES (%v, %v, "%v")`, idlixeira, nivel, date)
 	_, err = db.Query(querySQL)
 	if err != nil {
 		message := fmt.Sprintf("mysql query failed to execute. query: %s", querySQL)

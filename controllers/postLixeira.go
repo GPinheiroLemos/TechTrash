@@ -24,6 +24,7 @@ func PostLixeira(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	localizacao := lixeira[0].Localizacao
+	altura := lixeira[0].Altura
 
 	db, err := connection.MysqlConnect()
 	if err != nil {
@@ -32,7 +33,7 @@ func PostLixeira(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	querySQL := fmt.Sprintf(`INSERT INTO lixeira (localizacao) VALUES ("%s")`, localizacao)
+	querySQL := fmt.Sprintf(`INSERT INTO lixeira (localizacao, altura) VALUES ("%s", %v)`, localizacao, altura)
 	_, err = db.Query(querySQL)
 	if err != nil {
 		message := fmt.Sprintf("mysql query failed to execute. query: %s", querySQL)

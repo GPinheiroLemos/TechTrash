@@ -16,8 +16,9 @@ var (
 )
 
 type Lixeira struct {
-	Id          int    `json:"id"`
-	Localizacao string `json:"localizacao"`
+	Id          int     `json:"id"`
+	Localizacao string  `json:"localizacao"`
+	Altura      float64 `json:"altura"`
 }
 
 func GetLixeira(w http.ResponseWriter, r *http.Request) {
@@ -59,7 +60,7 @@ func GetLixeira(w http.ResponseWriter, r *http.Request) {
 	var lixeira []Lixeira
 	for results.Next() {
 		var lixeirabanco Lixeira
-		err = results.Scan(&lixeirabanco.Id, &lixeirabanco.Localizacao)
+		err = results.Scan(&lixeirabanco.Id, &lixeirabanco.Localizacao, &lixeirabanco.Altura)
 		if err != nil {
 			respError := map[string]string{"message": "error while reading data response from database"}
 			jsonResp, _ := json.Marshal(respError)

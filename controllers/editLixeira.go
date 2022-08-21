@@ -25,6 +25,7 @@ func EditLixeira(w http.ResponseWriter, r *http.Request) {
 	}
 	id := lixeira[0].Id
 	localizacao := lixeira[0].Localizacao
+	altura := lixeira[0].Altura
 
 	db, err := connection.MysqlConnect()
 	if err != nil {
@@ -33,7 +34,35 @@ func EditLixeira(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	querySQL := fmt.Sprintf(`UPDATE lixeira SET localizacao = "%s" WHERE idlixeira = %d`, localizacao, id)
+	querySQL := fmt.Sprintf("SELECT * FROM lixeira WHERE idlixeira = %v", id)
+	results, err := db.Query("SELECT * FROM lixeira WHERE idlixeira = ?", id)
+	if err != nil {
+		message := fmt.Sprintf("mysql query failed to execute. query: %s", querySQL)
+		utils.SetResponseError(w, r, message)
+		return
+	}
+
+	for results.Next() {
+		var lixeirabanco Lixeira
+		err = results.Scan(&lixeirabanco.Id, &lixeirabanco.Localizacao, &lixeirabanco.Altura)
+		if err != nil {
+			respError := map[string]string{"message": "error while reading data response from database"}
+			jsonResp, _ := json.Marshal(respError)
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write(jsonResp)
+			return
+		}
+		lixeira = append(lixeira, lixeirabanco)
+	}
+
+	if altura == 0 {
+		altura = lixeira[0].Altura
+	}
+	if localizacao == "" {
+		localizacao = lixeira[0].Localizacao
+	}
+
+	querySQL = fmt.Sprintf(`UPDATE lixeira SET localizacao = "%s", altura = %v WHERE idlixeira = %d`, localizacao, altura, id)
 	_, err = db.Query(querySQL)
 	if err != nil {
 		message := fmt.Sprintf("mysql query failed to execute. query: %s", querySQL)

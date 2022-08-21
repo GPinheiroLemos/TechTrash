@@ -8,7 +8,7 @@ import (
 	"techTrash/utils"
 )
 
-type LogLixeira struct {
+type LogLixeiraGet struct {
 	Idlog     int     `json:"idlog"`
 	Idlixeira int     `json:"idlixeira"`
 	Nivel     float64 `json:"nivel"`
@@ -43,9 +43,9 @@ func GetLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var logLixeira []LogLixeira
+	var logLixeira []LogLixeiraGet
 	for results.Next() {
-		var logbanco LogLixeira
+		var logbanco LogLixeiraGet
 		err = results.Scan(&logbanco.Idlog, &logbanco.Idlixeira, &logbanco.Nivel, &logbanco.Data)
 		if err != nil {
 			respError := map[string]string{"message": "error while reading data response from database"}
