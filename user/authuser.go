@@ -53,6 +53,10 @@ func AuthUser(w http.ResponseWriter, r *http.Request) {
 		usuario = append(usuario, usuarioTechTrash)
 	}
 
+	if len(usuario) < 1 {
+		utils.SetResponseError(w, r, "wrong password")
+		return
+	}
 	auth := utils.CheckPasswordHash(password, usuario[0].Password)
 	if auth == false {
 		utils.SetResponseError(w, r, "wrong password")
