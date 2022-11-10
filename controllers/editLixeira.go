@@ -3,7 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 	"techTrash/connection"
@@ -12,7 +12,7 @@ import (
 
 func EditLixeira(w http.ResponseWriter, r *http.Request) {
 
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		utils.SetResponseError(w, r, "could not read body")
 		return

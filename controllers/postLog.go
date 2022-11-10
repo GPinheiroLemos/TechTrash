@@ -3,7 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"math"
 	"net/http"
@@ -25,7 +25,7 @@ func PostLog(w http.ResponseWriter, r *http.Request) {
 
 	log.Print("Chegou uma resquisição do esp!")
 
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		utils.SetResponseError(w, r, "could not read body")
 		return

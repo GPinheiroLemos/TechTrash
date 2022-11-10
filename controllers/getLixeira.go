@@ -40,7 +40,7 @@ func GetLixeira(w http.ResponseWriter, r *http.Request) {
 
 	var results *sql.Rows
 	if idpassado == "0" {
-		querySQL := fmt.Sprintf("SELECT * FROM lixeira")
+		querySQL := "SELECT * FROM lixeira"
 		results, err = db.Query("SELECT * FROM lixeira")
 		if err != nil {
 			message := fmt.Sprintf("mysql query failed to execute. query: %s", querySQL)

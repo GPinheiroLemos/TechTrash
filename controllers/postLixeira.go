@@ -3,7 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -13,7 +13,7 @@ import (
 
 func PostLixeira(w http.ResponseWriter, r *http.Request) {
 
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		utils.SetResponseError(w, r, "could not read body")
 		return
