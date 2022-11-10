@@ -23,6 +23,6 @@ func main() {
 	router.Post("/loglixeira", controllers.PostLog)
 	router.Post("/cadastrarusuario", user.NewUser)
 	router.Post("/autenticarusuario", user.AuthUser)
-	log.Print("Listenning on port 8000")
+	log.Print("Listenning on port 8080")
 	log.Panic(http.ListenAndServe(":8080", router))
 }
