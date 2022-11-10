@@ -25,4 +25,5 @@ func main() {
 	router.Post("/autenticarusuario", user.AuthUser)
 	log.Print("Listenning on port 8000")
 	http.ListenAndServe(":8000", router)
+	log.Panic(http.ListenAndServe(":8080", router))
 }
